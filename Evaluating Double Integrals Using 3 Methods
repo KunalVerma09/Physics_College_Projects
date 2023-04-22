@@ -1,0 +1,106 @@
+# Taking limits and divisions
+a= int(input("enter lower limit of x: "))
+b= int(input("enter upper limit of x: "))
+c= int(input("enter lower limit of y: "))
+d= int(input("enter upper limit of y: "))
+nx= int(input("enter no. of divisions for x: "))
+ny= int(input("enter no. of divisions for y: "))
+print()
+print()
+
+# Taking coefficients
+inxsq=int(input("enter a coeff for x\u00b2 term: "))
+inysq=int(input("enter a coeff for y\u00b2 term: "))
+inxy=int(input("enter a coeff for xy term: "))
+inx=int(input("enter a coeff for x term: "))
+iny=int(input("enter a coeff for y term: "))
+const=int(input("enter a constant term: "))
+
+# Function to be integrated
+def f(x,y):
+    return inxsq*(x**2)+inysq*(y**2)+inx*x+iny*y+const+inxy*(x*y)
+
+# Mid point method for double integration
+def midpoint(f,a,b,c,d):
+    #a,b,c,d are double integration limits
+    hx=float((b-a)/nx)
+    hy=float((d-c)/ny)
+    I=0
+    for i in range(nx):
+        for j in range(ny):
+            xi=a+hx/2+i*hx
+            yj=c+hy/2+j*hy
+            I+=hx*hy*f(xi,yj)
+    return I
+
+valuemidpoint= midpoint(f,a,b,c,d)
+
+# Simpsons 1/3rd method for double integration
+def simpsons(f,a,b,c,d):
+    #a,b,c,d are double integration limits
+    I=(16*f((b+a)/2,(c+d)/2) + 4*f((b+a)/2,d) + 4*f((b+a)/2,c) + 4*f(b,(d+c)/2) + f(b,d) + f(b,c) + 4*f(a,(d+c)/2) + f(a,d) + f(a,c))*((b-a)*(d-c)/36)
+    return I
+
+valuesimpsons= simpsons(f,a,b,c,d)
+
+# Trapezoidal method for double integration
+def trap(f,a,b,c,d):
+    hx=float((b-a)/nx)
+    hy=float((d-c)/ny)
+    I=0
+    for i in range(nx):
+        for j in range(ny):
+            xi=a+hx+i*hx
+            yj=c+hy+j*hy 
+            xi1=a+hx+(i+1)*hx
+            yj1=c+hy+(j+1)*hy
+            I+=hx*hy*(f(xi1,yj1)+f(xi,yj))/2
+    return I
+
+valuetrap= trap(f,a,b,c,d)
+
+# Output
+print()
+print()
+print("the entered polynomial is: ", inxsq, "x\u00b2 + ",inysq,"y\u00b2 + ", inx,("x + "), iny,("y + "), inxy,("xy + "), const,("."), sep='')
+print()
+print()
+analy=float(input("please enter analytical value obtained: "))
+
+# Error calculation
+if valuemidpoint> analy:
+    ermid= (valuemidpoint- analy)/analy * 100
+else:
+    ermid= (analy- valuemidpoint)/analy *100
+
+if valuesimpsons> analy:
+    ersimp= (valuesimpsons- analy)/analy *100
+else:
+    ersimp= (analy - valuesimpsons)/analy *100
+
+if valuetrap> analy:
+    ertrap= (valuetrap- analy)/analy *100
+else:
+    ertrap= (analy- valuetrap)/analy *100
+
+print()
+print()
+print("output:")
+print("the obtained value of the integral by midpoint method is: ", valuemidpoint)
+print("percentage error by this method is: ", ermid, "%")
+print()
+print("the obtained value of the integral by simpsons 1/3rd rule is: ", valuesimpsons)
+print("percentage error by this method is: ", ersimp, "%")
+print()
+print("the obtained value of the integral by trapezoidal method is: ", valuetrap)
+print("percentage error by this method is: ", ertrap, "%")
+print()
+print()
+
+# Error analysis
+if ertrap<ermid and ertrap<ersimp:
+    print("the most accurate method is trapezoid method")
+elif ermid<ertrap and ermid<ersimp:
+    print("the most accurate method is midpoint method")
+else:
+    print("the most accurate method is simpsons 1/3rd rule")
