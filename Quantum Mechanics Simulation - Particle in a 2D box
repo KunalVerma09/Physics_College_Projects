@@ -1,0 +1,75 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import cm
+
+# Predefining the region
+Lx=1
+Ly=1
+
+k=1 # For simplicity of calculation
+
+# Energy input from user as scalar multiples of k
+En=(int(input("enter a value for energy:")))
+
+# Creating arrays for nx and ny values
+NX=[]
+NY=[]
+
+# Finding combinations of nx and ny values
+for i in range (1,En):
+    for j in range(1,i+1):
+        if En==k*(((i)**2)/Lx + ((j)**2)/Ly):
+            NX.append(i)
+            NY.append(j)
+        else:
+            j+=1
+    i+=1
+
+# Creaiting arrays for graph plotting
+x=np.linspace(0,Lx,1000)
+y=np.linspace(0,Ly,1000)
+x,y=np.meshgrid(x,y)
+PSI2=[]
+
+# Finding psi^2 values for particular combinations of nx and ny
+for l in NX:
+    o=NX.index(l)
+    nx=l
+    for d in NY:
+        ny=d
+        p=NY.index(d)
+        if o==p:
+            t=np.sqrt(4/(Lx*Ly))*np.sin((nx*np.pi*x)/Lx)*np.sin((ny*np.pi*y)/Ly)
+            t2=t**2
+            PSI2.append(t2)
+        d+=1
+    l+=1
+
+#plotting 3D graphs
+ax = plt.figure()
+
+for i in range(0,len(PSI2)):
+    
+    #first combination of nx and ny
+    fig = ax.add_subplot(2*len(PSI2),2,2*i+2, projection='3d')
+    fig.plot_surface(x,y,PSI2[i], cmap=cm.inferno)
+    ft = "For $n_{x}$=" + str(NX[i]) + " and $n_{y}$=" + str(NY[i])
+    fig.set_title(ft, fontsize = 8)
+    
+    fig.set_xticklabels([])
+    fig.set_yticklabels([])
+    fig.set_zticklabels([])
+
+    #second combination of nx and ny
+    fig2 = ax.add_subplot(2*len(PSI2),2,2*i+1, projection='3d')
+    fig2.plot_surface(y,x,PSI2[i], cmap=cm.inferno)
+    ft2 = "For $n_{x}$=" + str(NY[i]) + " and $n_{y}$=" + str(NX[i])
+    fig2.set_title(ft2, fontsize = 8)
+    
+    fig2.set_xticklabels([])
+    fig2.set_yticklabels([])
+    fig2.set_zticklabels([])
+
+ax.suptitle('$\psi^{2}$ of a particle in 2D box', fontsize = 11)
+
+plt.show()
